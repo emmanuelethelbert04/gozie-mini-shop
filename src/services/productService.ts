@@ -9,71 +9,103 @@ export const getAllProducts = async (): Promise<Product[]> => {
     // For demonstration, we'll use mock data as we don't have initial products
     // In a real app, you would fetch from: const productsRef = ref(database, 'products');
     
-    // Mock products data
+    // Mock products data for Gozie Mini Store
     const mockProducts: Product[] = [
       {
         id: "1",
-        name: "Wireless Headphones",
-        price: 79.99,
-        description: "Premium wireless headphones with noise cancellation and 20-hour battery life.",
-        image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-        category: "Electronics"
+        name: "Golden Morn",
+        price: 12.99,
+        description: "Delicious golden morn cereal, perfect for breakfast.",
+        image: "https://images.unsplash.com/photo-1575386248261-11d1a01795a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+        category: "Groceries"
       },
       {
         id: "2",
-        name: "Smart Watch",
-        price: 149.99,
-        description: "Feature-rich smart watch with health tracking, notifications, and apps.",
-        image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-        category: "Electronics"
+        name: "Cornflakes",
+        price: 9.99,
+        description: "Crunchy cornflakes cereal that stays crispy in milk.",
+        image: "https://images.unsplash.com/photo-1600788284-cbc4ff0df491?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+        category: "Groceries"
       },
       {
         id: "3",
-        name: "Cotton T-Shirt",
-        price: 19.99,
-        description: "Soft and comfortable 100% cotton t-shirt, perfect for everyday wear.",
-        image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-        category: "Clothing"
+        name: "Noodles Pack",
+        price: 5.99,
+        description: "Pack of instant noodles, ready in just 3 minutes.",
+        image: "https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+        category: "Groceries"
       },
       {
         id: "4",
-        name: "Coffee Maker",
-        price: 89.99,
-        description: "Programmable coffee maker with 12-cup capacity and auto shut-off.",
-        image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-        category: "Home"
+        name: "Spaghetti",
+        price: 7.99,
+        description: "Premium quality spaghetti pasta.",
+        image: "https://images.unsplash.com/photo-1551462147-37885acc36f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+        category: "Groceries"
       },
       {
         id: "5",
-        name: "Backpack",
-        price: 49.99,
-        description: "Durable backpack with multiple compartments and laptop sleeve.",
-        image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-        category: "Accessories"
+        name: "Red Wine",
+        price: 24.99,
+        description: "Premium quality red wine perfect for special occasions.",
+        image: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+        category: "Beverages"
       },
       {
         id: "6",
-        name: "Portable Speaker",
-        price: 59.99,
-        description: "Waterproof portable speaker with 10-hour battery life.",
-        image: "https://images.unsplash.com/photo-1589003077984-894e133dabab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-        category: "Electronics"
+        name: "Coffee Pack",
+        price: 15.99,
+        description: "Premium coffee blend for the perfect morning brew.",
+        image: "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+        category: "Beverages"
       },
       {
         id: "7",
-        name: "Desk Lamp",
-        price: 29.99,
-        description: "Adjustable desk lamp with multiple brightness levels and USB charging port.",
-        image: "https://images.unsplash.com/photo-1534277376214-8591ba42884b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-        category: "Home"
+        name: "Soft Drinks Pack",
+        price: 8.99,
+        description: "Pack of assorted soft drinks for your refreshment.",
+        image: "https://images.unsplash.com/photo-1581636625402-29b2a704ef13?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+        category: "Beverages"
       },
       {
         id: "8",
-        name: "Yoga Mat",
-        price: 34.99,
-        description: "Non-slip yoga mat with carrying strap, perfect for home workouts.",
-        image: "https://images.unsplash.com/photo-1599447292180-45fd84092ef0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-        category: "Fitness"
+        name: "Biscuits Variety Pack",
+        price: 6.99,
+        description: "Assorted biscuits perfect for tea time or snacks.",
+        image: "https://images.unsplash.com/photo-1590679915005-5c13e880f002?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+        category: "Provisions"
+      },
+      {
+        id: "9",
+        name: "Bar Soap Pack",
+        price: 7.99,
+        description: "Pack of 4 premium quality bar soaps.",
+        image: "https://images.unsplash.com/photo-1584305574647-0cc949a2bb9f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+        category: "Household"
+      },
+      {
+        id: "10",
+        name: "Detergent",
+        price: 11.99,
+        description: "High-quality laundry detergent for effective cleaning.",
+        image: "https://images.unsplash.com/photo-1631726089065-0c4775c86f51?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+        category: "Household"
+      },
+      {
+        id: "11",
+        name: "Vegetable Oil",
+        price: 18.99,
+        description: "100% pure vegetable oil for all your cooking needs.",
+        image: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+        category: "Provisions"
+      },
+      {
+        id: "12",
+        name: "Premium Rice",
+        price: 22.99,
+        description: "Premium quality rice, 5kg bag.",
+        image: "https://images.unsplash.com/photo-1536304447766-ccc345fc133b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+        category: "Groceries"
       }
     ];
     

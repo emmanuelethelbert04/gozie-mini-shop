@@ -5,7 +5,6 @@ import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { 
   Card, 
@@ -23,7 +22,7 @@ import {
   FormLabel, 
   FormMessage 
 } from "@/components/ui/form";
-import { createOrder } from "@/services/orderService";
+import { createOrder, createPaymentIntent } from "@/services/orderService";
 import { toast } from "sonner";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -80,7 +79,14 @@ const Checkout = () => {
 
     try {
       setIsLoading(true);
-
+      
+      // Create payment intent with Stripe (in a real app, this would be server-side)
+      const paymentIntent = await createPaymentIntent(cartTotal * 100); // Convert to cents
+      
+      if (!paymentIntent.clientSecret) {
+        throw new Error("Failed to create payment intent");
+      }
+      
       // Create order in Firebase
       const orderItems = cartItems.map(item => ({
         productId: item.product.id,
@@ -100,7 +106,12 @@ const Checkout = () => {
           postalCode: values.postalCode,
           phone: values.phone,
         },
-        paymentMethod: "Credit Card",
+        payment: {
+          method: "Credit Card",
+          amount: cartTotal,
+          status: "completed",
+          stripePaymentIntentId: paymentIntent.clientSecret.split("_secret_")[0]
+        },
         total: cartTotal,
         status: "pending",
         createdAt: new Date().toISOString(),

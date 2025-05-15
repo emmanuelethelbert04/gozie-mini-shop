@@ -47,10 +47,10 @@ const Home = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-2xl">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Shop Smart. Deliver Fast.
+              Welcome to Gozie Mini Store
             </h1>
             <p className="text-lg md:text-xl mb-8 opacity-90">
-              Discover amazing products at great prices. Fast shipping and excellent customer service.
+              Your one-stop shop for groceries, provisions, and household items.
             </p>
             <div className="flex flex-wrap gap-4">
               <Button 
@@ -120,9 +120,9 @@ const Home = () => {
       {/* Categories Section */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center">Shop by Category</h2>
+          <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center">Product Categories</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {["Electronics", "Clothing", "Home", "Accessories"].map((category) => (
+            {["Groceries", "Provisions", "Household", "Beverages"].map((category) => (
               <Link 
                 key={category} 
                 to={`/products?category=${category.toLowerCase()}`} 
@@ -142,7 +142,7 @@ const Home = () => {
       {/* Why Choose Us */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-bold mb-12 text-center">Why Choose ShopMini</h2>
+          <h2 className="text-2xl md:text-3xl font-bold mb-12 text-center">Why Choose Gozie Mini Store</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-white p-6 rounded-lg shadow text-center">
               <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -151,7 +151,7 @@ const Home = () => {
                 </svg>
               </div>
               <h3 className="text-xl font-bold mb-2">Quality Products</h3>
-              <p className="text-gray-600">We carefully select all our products to ensure the highest quality standards.</p>
+              <p className="text-gray-600">We offer only the highest quality groceries and household items.</p>
             </div>
             <div className="bg-white p-6 rounded-lg shadow text-center">
               <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -160,7 +160,7 @@ const Home = () => {
                 </svg>
               </div>
               <h3 className="text-xl font-bold mb-2">Fast Delivery</h3>
-              <p className="text-gray-600">We process and ship all orders quickly for the best shopping experience.</p>
+              <p className="text-gray-600">Get your groceries and household items delivered quickly to your doorstep.</p>
             </div>
             <div className="bg-white p-6 rounded-lg shadow text-center">
               <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -169,7 +169,7 @@ const Home = () => {
                 </svg>
               </div>
               <h3 className="text-xl font-bold mb-2">24/7 Support</h3>
-              <p className="text-gray-600">Our customer support team is available around the clock to assist you.</p>
+              <p className="text-gray-600">Our customer service team is always available to assist you.</p>
             </div>
           </div>
         </div>
