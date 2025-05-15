@@ -42,37 +42,44 @@ const Home = () => {
   return (
     <div className="animate-fade-in">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-primary to-destructive text-white py-20">
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-2xl">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">
-              Welcome to Gozie Mini Store
-            </h1>
-            <p className="text-lg md:text-xl mb-8 opacity-90 text-white">
-              Your one-stop shop for groceries, provisions, and household items.
-            </p>
-            <div className="flex flex-wrap gap-4">
+      <section className="relative h-[500px] md:h-[600px] overflow-hidden">
+        {/* Background Image with Overlay */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1578916171728-46686eac8d58?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80')" }}
+        >
+          {/* Dark Overlay for better text visibility */}
+          <div className="absolute inset-0 bg-black opacity-60"></div>
+        </div>
+        
+        {/* Content */}
+        <div className="relative h-full container mx-auto px-4 flex flex-col justify-center items-start z-10">
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 max-w-2xl font-heading">
+            Welcome to Gozie Mini Store
+          </h1>
+          <p className="text-xl md:text-2xl text-white mb-8 max-w-2xl opacity-90">
+            Shop quality groceries & household items – Fast, Reliable, Affordable
+          </p>
+          <div className="flex flex-wrap gap-4">
+            <Button 
+              size="lg" 
+              className="bg-primary text-primary-foreground hover:bg-destructive hover:text-white text-lg px-8 py-6 font-bold transition-all duration-300 shadow-lg"
+              asChild
+            >
+              <Link to="/products">Start Shopping</Link>
+            </Button>
+            {!currentUser && (
               <Button 
+                variant="outline" 
                 size="lg" 
-                className="bg-white text-destructive hover:bg-gray-100 font-bold"
+                className="border-2 border-white text-white hover:bg-white/10 font-medium px-8 py-6"
                 asChild
               >
-                <Link to="/products">Shop Now</Link>
+                <Link to="/register">Create Account</Link>
               </Button>
-              {!currentUser && (
-                <Button 
-                  variant="outline" 
-                  size="lg" 
-                  className="border-white text-white hover:bg-white/10 font-medium"
-                  asChild
-                >
-                  <Link to="/register">Create Account</Link>
-                </Button>
-              )}
-            </div>
+            )}
           </div>
         </div>
-        <div className="absolute inset-0 bg-black opacity-10"></div>
       </section>
 
       {/* Featured Products */}
