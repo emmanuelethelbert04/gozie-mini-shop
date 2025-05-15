@@ -30,24 +30,26 @@ export default {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				primary: {
-					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					DEFAULT: '#FACC15', // Yellow primary color
+					foreground: '#000000', // Black text on yellow background
+					hover: '#e5b800', // Slightly darker yellow for hover
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
 					foreground: 'hsl(var(--secondary-foreground))'
 				},
 				destructive: {
-					DEFAULT: 'hsl(var(--destructive))',
-					foreground: 'hsl(var(--destructive-foreground))'
+					DEFAULT: '#DC2626', // Red accent color
+					foreground: '#ffffff', // White text on red background
+					hover: '#b91c1c', // Slightly darker red for hover
 				},
 				muted: {
 					DEFAULT: 'hsl(var(--muted))',
 					foreground: 'hsl(var(--muted-foreground))'
 				},
 				accent: {
-					DEFAULT: 'hsl(var(--accent))',
-					foreground: 'hsl(var(--accent-foreground))'
+					DEFAULT: '#DC2626', // Red accent color
+					foreground: '#ffffff', // White text on red background
 				},
 				popover: {
 					DEFAULT: 'hsl(var(--popover))',
