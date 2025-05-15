@@ -47,7 +47,7 @@ const Home = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-2xl">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Shop the Best Products at ShopMini
+              Shop Smart. Deliver Fast.
             </h1>
             <p className="text-lg md:text-xl mb-8 opacity-90">
               Discover amazing products at great prices. Fast shipping and excellent customer service.
