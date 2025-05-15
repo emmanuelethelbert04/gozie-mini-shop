@@ -42,10 +42,10 @@ const Home = () => {
   return (
     <div className="animate-fade-in">
       {/* Hero Section */}
-      <section className="relative h-[500px] md:h-[600px] overflow-hidden">
+      <section className="relative h-[500px] md:h-[600px] overflow-hidden" style={{height: "600px"}}>
         {/* Background Image with Overlay */}
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat h-full py-16"
           style={{ backgroundImage: "url('https://images.unsplash.com/photo-1578916171728-46686eac8d58?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80')" }}
         >
           {/* Dark Overlay for better text visibility */}
@@ -53,7 +53,7 @@ const Home = () => {
         </div>
         
         {/* Content */}
-        <div className="relative h-full container mx-auto px-4 flex flex-col justify-center items-start z-10">
+        <div className="relative h-full container mx-auto px-4 py-16 flex flex-col justify-center items-start z-10">
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 max-w-2xl font-heading">
             Welcome to Gozie Mini Store
           </h1>
@@ -72,7 +72,7 @@ const Home = () => {
               <Button 
                 variant="outline" 
                 size="lg" 
-                className="border-2 border-white text-white hover:bg-white/10 font-medium px-8 py-6"
+                className="border-2 border-white text-white bg-white/10 font-medium px-8 py-6 hover:bg-white hover:text-primary "
                 asChild
               >
                 <Link to="/register">Create Account</Link>

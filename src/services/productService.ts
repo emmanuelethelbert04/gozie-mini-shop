@@ -3,6 +3,7 @@ import { ref, get } from "firebase/database";
 import { database } from "@/lib/firebase";
 import { Product } from "@/contexts/CartContext";
 
+
 // Fetch all products from Firebase
 export const getAllProducts = async (): Promise<Product[]> => {
   try {
@@ -16,7 +17,7 @@ export const getAllProducts = async (): Promise<Product[]> => {
         name: "Golden Morn",
         price: 12.99,
         description: "Delicious golden morn cereal, perfect for breakfast.",
-        image: "https://images.unsplash.com/photo-1575386248261-11d1a01795a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+        image: "Nestle Golden Morn Cereal.jpeg",
         category: "Groceries"
       },
       {
@@ -24,7 +25,7 @@ export const getAllProducts = async (): Promise<Product[]> => {
         name: "Cornflakes",
         price: 9.99,
         description: "Crunchy cornflakes cereal that stays crispy in milk.",
-        image: "https://images.unsplash.com/photo-1600788284-cbc4ff0df491?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+        image: "corn-flakes.jpeg",
         category: "Groceries"
       },
       {
@@ -32,7 +33,7 @@ export const getAllProducts = async (): Promise<Product[]> => {
         name: "Noodles Pack",
         price: 5.99,
         description: "Pack of instant noodles, ready in just 3 minutes.",
-        image: "https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+        image: "Indomie.jpeg",
         category: "Groceries"
       },
       {
@@ -40,7 +41,7 @@ export const getAllProducts = async (): Promise<Product[]> => {
         name: "Spaghetti",
         price: 7.99,
         description: "Premium quality spaghetti pasta.",
-        image: "https://images.unsplash.com/photo-1551462147-37885acc36f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
+        image: "Redirect.jpeg",
         category: "Groceries"
       },
       {
