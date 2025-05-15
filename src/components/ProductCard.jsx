@@ -3,6 +3,10 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 import { ShoppingCart } from "lucide-react";
+import { 
+  Card,
+  CardContent,
+} from "@/components/ui/card";
 
 const ProductCard = ({ product, onClick }) => {
   const { addToCart } = useCart();
@@ -13,18 +17,18 @@ const ProductCard = ({ product, onClick }) => {
   };
 
   return (
-    <div 
-      className="product-card hover-scale cursor-pointer"
+    <Card 
+      className="overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-105"
       onClick={onClick}
     >
-      <div className="product-card-image">
+      <div className="h-48 overflow-hidden">
         <img 
           src={product.image} 
           alt={product.name}
           className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
         />
       </div>
-      <div className="product-card-content">
+      <CardContent className="p-4">
         <h3 className="font-medium text-lg mb-1 truncate">{product.name}</h3>
         <p className="text-gray-500 text-sm mb-2 truncate">{product.category}</p>
         <div className="flex justify-between items-center mt-3">
@@ -32,14 +36,14 @@ const ProductCard = ({ product, onClick }) => {
           <Button 
             size="sm" 
             onClick={handleAddToCart}
-            className="rounded-full bg-primary text-primary-foreground hover:bg-destructive hover:text-white"
+            className="rounded-full bg-primary text-primary-foreground hover:bg-destructive hover:text-white transition-colors"
           >
             <ShoppingCart className="h-4 w-4 mr-1" />
             Add
           </Button>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 
