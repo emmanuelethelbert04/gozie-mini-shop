@@ -1,9 +1,8 @@
-
 import { ref, push, set, get, query, orderByChild, equalTo } from "firebase/database";
 import { database } from "@/lib/firebase";
 import emailjs from 'emailjs-com';
-// Import the proper export from paystack-js
-import paystack from 'paystack-js';
+// Import using named import instead of default import
+import * as PaystackPop from 'paystack-js';
 
 // Initialize EmailJS service
 const EMAILJS_SERVICE_ID = "service_5kr10ul";
@@ -35,13 +34,9 @@ export const createOrder = async (orderData: any): Promise<string> => {
 // Process payment with Paystack
 export const processPaystackPayment = async (email: string, amount: number, metadata: any, callback: Function) => {
   try {
-    // Initialize Paystack with the public key
-    paystack.initialize({
-      key: PAYSTACK_PUBLIC_KEY
-    });
-    
-    // Create a new transaction using the proper method
-    paystack.createTransaction({
+    // Use the PaystackPop directly without initialization
+    // This is following the paystack-js API
+    PaystackPop.newTransaction({
       key: PAYSTACK_PUBLIC_KEY,
       email,
       amount: amount * 100, // Convert to kobo (smallest unit of Nigerian currency)
