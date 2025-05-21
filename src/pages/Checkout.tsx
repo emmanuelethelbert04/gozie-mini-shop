@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
@@ -129,8 +130,9 @@ const Checkout = () => {
         payment: {
           method: values.paymentMethod,
           amount: cartTotal,
-          status: "pending"
-        },
+          status: "pending",
+          stripePaymentIntentId: undefined // Initialize with undefined
+        } as PaymentDetails, // Cast to PaymentDetails type to ensure it matches the interface
         total: cartTotal,
         status: "pending",
         createdAt: new Date().toISOString(),
