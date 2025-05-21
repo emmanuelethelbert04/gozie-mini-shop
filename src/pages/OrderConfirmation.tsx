@@ -5,7 +5,7 @@ import { getOrderById } from "@/services/orderService";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { CheckCircle, Truck, Calendar, Clock } from "lucide-react";
+import { CheckCircle, Truck, Building, Phone, CreditCard, Clock, Calendar } from "lucide-react";
 
 interface OrderItem {
   productId: string;
@@ -14,9 +14,20 @@ interface OrderItem {
   quantity: number;
 }
 
+interface PaymentDetails {
+  method: "Card" | "Bank Transfer" | "USSD";
+  status: "pending" | "completed";
+  amount: number;
+  stripePaymentIntentId?: string;
+  bankName?: string;
+  accountNumber?: string;
+  accountName?: string;
+}
+
 interface Order {
   id: string;
   userId: string;
+  userEmail: string;
   items: OrderItem[];
   delivery: {
     firstName: string;
@@ -26,7 +37,7 @@ interface Order {
     postalCode: string;
     phone: string;
   };
-  paymentMethod: string;
+  payment: PaymentDetails;
   total: number;
   status: string;
   createdAt: string;
@@ -79,9 +90,9 @@ const OrderConfirmation = () => {
     return (
       <div className="container mx-auto px-4 py-8 animate-fade-in">
         <div className="max-w-2xl mx-auto text-center">
-          <h1 className="text-3xl font-bold mb-4">Order Not Found</h1>
+          <h1 className="text-3xl font-bold mb-4 text-yellow-500">Order Not Found</h1>
           <p className="text-gray-600 mb-6">The order you're looking for doesn't exist or you may not have permission to view it.</p>
-          <Button asChild>
+          <Button asChild variant="default" className="bg-yellow-500 hover:bg-red-500 hover:text-yellow-400 transition-colors">
             <Link to="/">Return to Home</Link>
           </Button>
         </div>
@@ -109,22 +120,40 @@ const OrderConfirmation = () => {
     day: 'numeric'
   });
 
+  // Payment method icon
+  const getPaymentIcon = (method: string) => {
+    switch (method) {
+      case "Card": return <CreditCard className="h-5 w-5 text-yellow-600" />;
+      case "Bank Transfer": return <Building className="h-5 w-5 text-yellow-600" />;
+      case "USSD": return <Phone className="h-5 w-5 text-yellow-600" />;
+      default: return <CreditCard className="h-5 w-5 text-yellow-600" />;
+    }
+  };
+
+  // Payment status badge
+  const getPaymentStatusBadge = (status: string) => {
+    if (status === "completed") {
+      return <span className="px-2 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Paid</span>;
+    }
+    return <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full">Pending</span>;
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 animate-fade-in">
       <div className="max-w-2xl mx-auto">
-        <Card>
+        <Card className="border-yellow-300 shadow-md">
           <CardContent className="p-6">
             <div className="text-center mb-6">
               <div className="inline-flex items-center justify-center rounded-full bg-green-100 p-3 mb-4">
                 <CheckCircle className="h-8 w-8 text-green-600" />
               </div>
-              <h1 className="text-2xl font-bold mb-2">Order Confirmed!</h1>
+              <h1 className="text-2xl font-bold mb-2 text-yellow-600">Order Confirmed!</h1>
               <p className="text-gray-600">
                 Thank you for your purchase. Your order has been received and is being processed.
               </p>
             </div>
 
-            <div className="bg-primary/5 rounded-lg p-4 mb-6">
+            <div className="bg-yellow-50 rounded-lg p-4 mb-6">
               <div className="flex justify-between mb-2">
                 <span className="font-medium">Order Number:</span>
                 <span>{order.id}</span>
@@ -136,7 +165,7 @@ const OrderConfirmation = () => {
             </div>
 
             <div className="space-y-4 mb-6">
-              <h2 className="font-semibold text-lg">Order Status</h2>
+              <h2 className="font-semibold text-lg text-yellow-600">Order Status</h2>
               <div className="flex items-center text-green-600">
                 <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-3">
                   <CheckCircle className="h-4 w-4" />
@@ -147,7 +176,7 @@ const OrderConfirmation = () => {
                 </div>
               </div>
               <div className="flex items-center text-gray-600">
-                <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mr-3">
+                <div className="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center mr-3">
                   <Truck className="h-4 w-4" />
                 </div>
                 <div>
@@ -157,10 +186,10 @@ const OrderConfirmation = () => {
               </div>
             </div>
 
-            <Separator className="my-6" />
+            <Separator className="my-6 bg-yellow-200" />
 
             <div className="mb-6">
-              <h2 className="font-semibold text-lg mb-4">Order Details</h2>
+              <h2 className="font-semibold text-lg text-yellow-600 mb-4">Order Details</h2>
               <div className="space-y-4">
                 {order.items.map((item) => (
                   <div key={item.productId} className="flex justify-between">
@@ -174,11 +203,11 @@ const OrderConfirmation = () => {
               </div>
             </div>
 
-            <Separator className="my-6" />
+            <Separator className="my-6 bg-yellow-200" />
 
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <h2 className="font-semibold text-lg mb-3">Shipping Address</h2>
+                <h2 className="font-semibold text-lg text-yellow-600 mb-3">Shipping Address</h2>
                 <p className="text-gray-600">
                   {order.delivery.firstName} {order.delivery.lastName}
                   <br />
@@ -190,10 +219,35 @@ const OrderConfirmation = () => {
                 </p>
               </div>
               <div>
-                <h2 className="font-semibold text-lg mb-3">Payment Method</h2>
-                <p className="text-gray-600 mb-4">{order.paymentMethod}</p>
+                <h2 className="font-semibold text-lg text-yellow-600 mb-3">Payment Method</h2>
+                <div className="flex items-center space-x-2 mb-2">
+                  {getPaymentIcon(order.payment.method)}
+                  <span>
+                    {order.payment.method} {getPaymentStatusBadge(order.payment.status)}
+                  </span>
+                </div>
                 
-                <h2 className="font-semibold text-lg mb-3">Order Summary</h2>
+                {order.payment.method === "Bank Transfer" && (
+                  <div className="bg-yellow-50 p-3 rounded mb-4 text-sm">
+                    <p className="text-gray-600">Please make your transfer to:</p>
+                    <p className="mt-2">
+                      <strong>Bank:</strong> Gozie Bank Ltd<br />
+                      <strong>Account:</strong> 0123456789<br />
+                      <strong>Name:</strong> Gozie Mini Store Ltd<br />
+                      <strong>Reference:</strong> Order #{order.id.slice(0, 8)}
+                    </p>
+                  </div>
+                )}
+
+                {order.payment.method === "USSD" && (
+                  <div className="bg-yellow-50 p-3 rounded mb-4 text-sm">
+                    <p className="text-gray-600">Complete your payment with USSD:</p>
+                    <p className="font-bold text-center my-2">*737*34*{order.total.toFixed(0)}#</p>
+                    <p className="text-xs text-gray-500">Use your order number as reference: #{order.id.slice(0, 8)}</p>
+                  </div>
+                )}
+                
+                <h2 className="font-semibold text-lg text-yellow-600 mb-3">Order Summary</h2>
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Subtotal</span>
@@ -205,17 +259,17 @@ const OrderConfirmation = () => {
                   </div>
                   <div className="flex justify-between font-bold">
                     <span>Total</span>
-                    <span>${order.total.toFixed(2)}</span>
+                    <span className="text-yellow-700">${order.total.toFixed(2)}</span>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="mt-8 flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-3">
-              <Button asChild variant="default" className="w-full">
+              <Button asChild variant="default" className="w-full bg-yellow-500 hover:bg-red-500 hover:text-yellow-400 transition-colors">
                 <Link to="/orders">View All Orders</Link>
               </Button>
-              <Button asChild variant="outline" className="w-full">
+              <Button asChild variant="outline" className="w-full border-yellow-500 text-yellow-700 hover:bg-yellow-50">
                 <Link to="/products">Continue Shopping</Link>
               </Button>
             </div>

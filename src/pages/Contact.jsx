@@ -10,10 +10,11 @@ import {
   CardTitle, 
   CardDescription 
 } from "@/components/ui/card";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { db } from "@/lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { Map, Mail, Phone, Home } from "lucide-react";
+import { Map, Mail, Phone, Home, Send, Loader2 } from "lucide-react";
+import { sendContactFormEmail } from "@/services/orderService";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -79,19 +80,24 @@ const Contact = () => {
         createdAt: serverTimestamp()
       });
       
+      // Send email via EmailJS
+      await sendContactFormEmail({
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
+        timestamp: new Date().toISOString()
+      });
+      
       // Reset form and show success message
       setFormData({ name: "", email: "", message: "" });
-      toast({
-        title: "Message Sent!",
+      toast.success("Message Sent!", {
         description: "We'll get back to you as soon as possible.",
-        variant: "default",
+        icon: <Send className="h-4 w-4 text-green-500" />,
       });
     } catch (error) {
       console.error("Error sending message:", error);
-      toast({
-        title: "Error",
+      toast.error("Error", {
         description: "There was a problem sending your message. Please try again.",
-        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -100,44 +106,44 @@ const Contact = () => {
 
   return (
     <div className="container mx-auto px-4 py-12 animate-fade-in">
-      <h1 className="text-3xl md:text-4xl font-bold mb-8 text-center">Contact Us</h1>
+      <h1 className="text-3xl md:text-4xl font-bold mb-8 text-center text-yellow-600">Contact Us</h1>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
         {/* Contact Information */}
-        <Card className="shadow-md">
-          <CardHeader>
-            <CardTitle className="text-2xl">Our Information</CardTitle>
+        <Card className="shadow-md border-yellow-300 transform transition-all hover:shadow-lg">
+          <CardHeader className="bg-yellow-50 border-b border-yellow-100">
+            <CardTitle className="text-2xl text-yellow-600">Our Information</CardTitle>
             <CardDescription>Reach out to us through any of these channels</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-6 mt-4">
             <div className="flex items-start gap-3">
-              <Phone className="h-5 w-5 text-destructive mt-0.5" />
+              <Phone className="h-5 w-5 text-red-600 mt-0.5" />
               <div>
-                <h3 className="font-medium">Phone Number</h3>
+                <h3 className="font-medium text-yellow-700">Phone Number</h3>
                 <p className="text-gray-600">+234 7012345678</p>
               </div>
             </div>
             
             <div className="flex items-start gap-3">
-              <Mail className="h-5 w-5 text-primary mt-0.5" />
+              <Mail className="h-5 w-5 text-yellow-600 mt-0.5" />
               <div>
-                <h3 className="font-medium">Email Address</h3>
+                <h3 className="font-medium text-yellow-700">Email Address</h3>
                 <p className="text-gray-600">support@goziestore.com</p>
               </div>
             </div>
             
             <div className="flex items-start gap-3">
-              <Home className="h-5 w-5 text-destructive mt-0.5" />
+              <Home className="h-5 w-5 text-red-600 mt-0.5" />
               <div>
-                <h3 className="font-medium">Store Address</h3>
+                <h3 className="font-medium text-yellow-700">Store Address</h3>
                 <p className="text-gray-600">123 Market Road, Lagos, Nigeria</p>
               </div>
             </div>
             
             <div className="flex items-start gap-3">
-              <Map className="h-5 w-5 text-primary mt-0.5" />
+              <Map className="h-5 w-5 text-yellow-600 mt-0.5" />
               <div>
-                <h3 className="font-medium">Business Hours</h3>
+                <h3 className="font-medium text-yellow-700">Business Hours</h3>
                 <p className="text-gray-600">Monday-Friday: 8:00 AM - 8:00 PM</p>
                 <p className="text-gray-600">Saturday-Sunday: 9:00 AM - 6:00 PM</p>
               </div>
@@ -146,12 +152,12 @@ const Contact = () => {
         </Card>
         
         {/* Contact Form */}
-        <Card className="shadow-md">
-          <CardHeader>
-            <CardTitle className="text-2xl">Send Us a Message</CardTitle>
+        <Card className="shadow-md border-yellow-300 transform transition-all hover:shadow-lg">
+          <CardHeader className="bg-yellow-50 border-b border-yellow-100">
+            <CardTitle className="text-2xl text-yellow-600">Send Us a Message</CardTitle>
             <CardDescription>We'll respond as soon as possible</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="mt-4">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <Label htmlFor="name">Your Name</Label>
@@ -161,9 +167,9 @@ const Contact = () => {
                   placeholder="Enter your full name"
                   value={formData.name}
                   onChange={handleChange}
-                  className={errors.name ? "border-destructive" : ""}
+                  className={`${errors.name ? "border-red-500" : "focus:border-yellow-400"}`}
                 />
-                {errors.name && <p className="text-sm text-destructive mt-1">{errors.name}</p>}
+                {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
               </div>
               
               <div>
@@ -175,9 +181,9 @@ const Contact = () => {
                   placeholder="your@email.com"
                   value={formData.email}
                   onChange={handleChange}
-                  className={errors.email ? "border-destructive" : ""}
+                  className={`${errors.email ? "border-red-500" : "focus:border-yellow-400"}`}
                 />
-                {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
+                {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
               </div>
               
               <div>
@@ -189,17 +195,25 @@ const Contact = () => {
                   value={formData.message}
                   onChange={handleChange}
                   rows={5}
-                  className={`w-full rounded-md border ${errors.message ? 'border-destructive' : 'border-input'} bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2`}
+                  className={`w-full rounded-md border ${errors.message ? 'border-red-500' : 'border-input focus:border-yellow-400'} bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2`}
                 />
-                {errors.message && <p className="text-sm text-destructive mt-1">{errors.message}</p>}
+                {errors.message && <p className="text-sm text-red-500 mt-1">{errors.message}</p>}
               </div>
               
               <Button 
                 type="submit" 
-                className="w-full bg-primary text-primary-foreground hover:bg-destructive hover:text-white font-medium"
+                className="w-full bg-yellow-500 hover:bg-red-600 hover:text-yellow-300 transition-all duration-300 transform active:scale-95"
                 disabled={loading}
               >
-                {loading ? "Sending..." : "Send Message"}
+                {loading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send className="mr-2 h-4 w-4" /> Send Message
+                  </>
+                )}
               </Button>
             </form>
           </CardContent>
@@ -207,9 +221,9 @@ const Contact = () => {
       </div>
       
       {/* Google Maps Embed */}
-      <Card className="overflow-hidden shadow-md mb-12">
-        <CardHeader>
-          <CardTitle className="text-2xl">Find Us</CardTitle>
+      <Card className="overflow-hidden shadow-md border-yellow-300 mb-12">
+        <CardHeader className="bg-yellow-50 border-b border-yellow-100">
+          <CardTitle className="text-2xl text-yellow-600">Find Us</CardTitle>
           <CardDescription>Visit our store location</CardDescription>
         </CardHeader>
         <div className="h-[400px] w-full">

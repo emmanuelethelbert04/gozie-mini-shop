@@ -15,6 +15,7 @@ import Cart from "@/pages/Cart";
 import Checkout from "@/pages/Checkout";
 import OrderConfirmation from "@/pages/OrderConfirmation";
 import Orders from "@/pages/Orders";
+import Contact from "@/pages/Contact";
 import Admin from "@/pages/Admin";
 import NotFound from "@/pages/NotFound";
 
@@ -40,12 +41,13 @@ const App = () => (
                   <Route path="/checkout" element={<Checkout />} />
                   <Route path="/order-confirmation/:orderId" element={<OrderConfirmation />} />
                   <Route path="/orders" element={<Orders />} />
+                  <Route path="/contact" element={<Contact />} />
                   <Route path="/admin" element={<Admin />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </main>
-              <footer className="bg-gray-100 py-6 mt-12">
-                <div className="container mx-auto px-4 text-center text-gray-600">
+              <footer className="bg-yellow-50 py-6 mt-12 border-t border-yellow-200">
+                <div className="container mx-auto px-4 text-center text-yellow-700">
                   <p>© 2025 Gozie Mini Store. All rights reserved.</p>
                 </div>
               </footer>

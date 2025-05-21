@@ -38,6 +38,39 @@ export const createPaymentIntent = async (amount: number) => {
   }
 };
 
+// Process bank transfer payment
+export const processBankTransferPayment = async (orderId: string, transferDetails: any) => {
+  try {
+    const paymentRef = ref(database, `orders/${orderId}/payment`);
+    await set(paymentRef, {
+      ...transferDetails,
+      method: "Bank Transfer",
+      status: "pending",
+      timestamp: new Date().toISOString()
+    });
+    return true;
+  } catch (error) {
+    console.error("Error processing bank transfer:", error);
+    throw error;
+  }
+};
+
+// Process USSD payment
+export const processUSSDPayment = async (orderId: string) => {
+  try {
+    const paymentRef = ref(database, `orders/${orderId}/payment`);
+    await set(paymentRef, {
+      method: "USSD",
+      status: "pending",
+      timestamp: new Date().toISOString()
+    });
+    return true;
+  } catch (error) {
+    console.error("Error processing USSD payment:", error);
+    throw error;
+  }
+};
+
 // Get order by ID
 export const getOrderById = async (orderId: string) => {
   try {
@@ -94,6 +127,41 @@ export const updateOrderStatus = async (orderId: string, status: string) => {
     return true;
   } catch (error) {
     console.error(`Error updating status for order ${orderId}:`, error);
+    throw error;
+  }
+};
+
+// Update payment status (for admin)
+export const updatePaymentStatus = async (orderId: string, status: string) => {
+  try {
+    const paymentStatusRef = ref(database, `orders/${orderId}/payment/status`);
+    await set(paymentStatusRef, status);
+    return true;
+  } catch (error) {
+    console.error(`Error updating payment status for order ${orderId}:`, error);
+    throw error;
+  }
+};
+
+// EmailJS functions for sending emails
+export const sendOrderConfirmationEmail = async (orderData: any, userEmail: string) => {
+  try {
+    // In a real implementation, this would call EmailJS API
+    console.log("Sending order confirmation email to:", userEmail, "with data:", orderData);
+    return true;
+  } catch (error) {
+    console.error("Error sending order confirmation email:", error);
+    throw error;
+  }
+};
+
+export const sendContactFormEmail = async (formData: any) => {
+  try {
+    // In a real implementation, this would call EmailJS API
+    console.log("Sending contact form email with data:", formData);
+    return true;
+  } catch (error) {
+    console.error("Error sending contact form email:", error);
     throw error;
   }
 };
