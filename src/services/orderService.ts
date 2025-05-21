@@ -1,8 +1,7 @@
-
 import { ref, push, set, get, query, orderByChild, equalTo } from "firebase/database";
 import { database } from "@/lib/firebase";
 import emailjs from 'emailjs-com';
-import paystack from 'paystack-js';
+import { PaystackPop } from 'paystack-js';
 
 // Initialize EmailJS service
 const EMAILJS_SERVICE_ID = "service_5kr10ul";
@@ -34,10 +33,8 @@ export const createOrder = async (orderData: any): Promise<string> => {
 // Process payment with Paystack
 export const processPaystackPayment = async (email: string, amount: number, metadata: any, callback: Function) => {
   try {
-    // Initialize Paystack
-    paystack.initialize({
-      key: PAYSTACK_PUBLIC_KEY
-    });
+    // Create a new instance of PaystackPop
+    const paystack = PaystackPop();
     
     // Create a new transaction
     paystack.newTransaction({
