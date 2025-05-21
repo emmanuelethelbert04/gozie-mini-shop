@@ -2,12 +2,16 @@
 import { ref, push, set, get, query, orderByChild, equalTo } from "firebase/database";
 import { database } from "@/lib/firebase";
 import emailjs from 'emailjs-com';
+import { PaystackPop } from 'paystack-js';
 
 // Initialize EmailJS service
 const EMAILJS_SERVICE_ID = "service_5kr10ul";
 const EMAILJS_ORDER_TEMPLATE_ID = "template_ye6jjd5";
 const EMAILJS_CONTACT_TEMPLATE_ID = "template_12h0zgn";
 const EMAILJS_PUBLIC_KEY = "Pb5jDQAKBNYgwUbnL";
+
+// Paystack public key (replace with your Paystack public key)
+const PAYSTACK_PUBLIC_KEY = "pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 
 // Create a new order
 export const createOrder = async (orderData: any): Promise<string> => {
@@ -27,20 +31,28 @@ export const createOrder = async (orderData: any): Promise<string> => {
   }
 };
 
-// Create payment intent with Stripe (mock implementation for now)
-export const createPaymentIntent = async (amount: number) => {
+// Process payment with Paystack
+export const processPaystackPayment = async (email: string, amount: number, metadata: any, callback: Function) => {
   try {
-    // In a real implementation, this would call a secure backend function
-    // that creates a PaymentIntent using the Stripe API
+    const paystack = new PaystackPop();
+    paystack.newTransaction({
+      key: PAYSTACK_PUBLIC_KEY,
+      email,
+      amount: amount * 100, // Convert to kobo (smallest unit of Nigerian currency)
+      currency: "NGN",
+      ref: 'GMS-' + Math.floor((Math.random() * 1000000000) + 1), // Generate a unique reference
+      metadata,
+      callback: function(response: any) {
+        callback(response);
+      },
+      onClose: function() {
+        console.log('Transaction was closed');
+      }
+    });
     
-    // Mock successful response
-    return {
-      clientSecret: "mock_client_secret_" + Math.random().toString(36).substring(2),
-      amount: amount,
-      currency: "ngn" // Changed from usd to ngn for Naira
-    };
+    return true;
   } catch (error) {
-    console.error("Error creating payment intent:", error);
+    console.error("Error processing Paystack payment:", error);
     throw error;
   }
 };

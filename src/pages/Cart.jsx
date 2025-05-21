@@ -78,8 +78,8 @@ const Cart = () => {
                       </div>
                     </div>
                     <div className="mt-4 sm:mt-0 text-right">
-                      <span className="font-semibold text-destructive">${(item.product.price * item.quantity).toFixed(2)}</span>
-                      <p className="text-sm text-gray-500">${item.product.price.toFixed(2)} each</p>
+                      <span className="font-semibold text-destructive">₦{(item.product.price * item.quantity).toFixed(2)}</span>
+                      <p className="text-sm text-gray-500">₦{item.product.price.toFixed(2)} each</p>
                     </div>
                   </div>
                 ))}
@@ -104,7 +104,7 @@ const Cart = () => {
               <div className="space-y-3 mb-4">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Subtotal</span>
-                  <span>${cartTotal.toFixed(2)}</span>
+                  <span>₦{cartTotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Shipping</span>
@@ -113,7 +113,7 @@ const Cart = () => {
                 <div className="border-t pt-3 mt-3">
                   <div className="flex justify-between font-semibold">
                     <span>Total</span>
-                    <span className="text-destructive">${cartTotal.toFixed(2)}</span>
+                    <span className="text-destructive">₦{cartTotal.toFixed(2)}</span>
                   </div>
                 </div>
               </div>

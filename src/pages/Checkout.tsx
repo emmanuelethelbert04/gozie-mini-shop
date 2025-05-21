@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/form";
 import {
   createOrder,
-  createPaymentIntent,
+  processPaystackPayment,
   processBankTransferPayment,
   processUSSDPayment,
   sendOrderConfirmationEmail
@@ -44,23 +44,16 @@ const formSchema = z.object({
   postalCode: z.string().min(3, "Postal code is required"),
   phone: z.string().min(5, "Phone number is required"),
   email: z.string().email("Valid email is required"),
-  paymentMethod: z.enum(["Card", "Bank Transfer", "USSD"]),
-  // Card fields - only required if payment method is Card
-  cardNumber: z.string().optional()
-    .refine(val => val === undefined || val.length === 16, "Card number is required"),
-  cardExpiry: z.string().optional()
-    .refine(val => val === undefined || /^(0[1-9]|1[0-2])\/\d{2}$/.test(val), "Expiry date must be in MM/YY format"),
-  cardCvc: z.string().optional()
-    .refine(val => val === undefined || (val.length >= 3 && val.length <= 4), "CVC is required"),
+  paymentMethod: z.enum(["Paystack", "Bank Transfer", "USSD"]),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
 interface PaymentDetails {
-  method: "Bank Transfer" | "USSD" | "Card";
+  method: "Paystack" | "Bank Transfer" | "USSD";
   amount: number;
   status: string;
-  stripePaymentIntentId?: string; // Added as optional since it will only exist for Card payments
+  reference?: string;
 }
 
 const Checkout = () => {
@@ -68,7 +61,6 @@ const Checkout = () => {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedPayment, setSelectedPayment] = useState("Card");
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -80,10 +72,7 @@ const Checkout = () => {
       postalCode: "",
       phone: "",
       email: currentUser?.email || "",
-      paymentMethod: "Card",
-      cardNumber: "",
-      cardExpiry: "",
-      cardCvc: "",
+      paymentMethod: "Paystack",
     },
   });
 
@@ -131,8 +120,7 @@ const Checkout = () => {
           method: values.paymentMethod,
           amount: cartTotal,
           status: "pending",
-          stripePaymentIntentId: undefined // Initialize with undefined
-        } as PaymentDetails, // Cast to PaymentDetails type to ensure it matches the interface
+        } as PaymentDetails,
         total: cartTotal,
         status: "pending",
         createdAt: new Date().toISOString(),
@@ -140,19 +128,37 @@ const Checkout = () => {
 
       // Create the order first
       const orderId = await createOrder(orderData);
+      orderData.orderId = orderId;
       
       // Handle payment based on the selected method
-      if (values.paymentMethod === "Card") {
-        // Create payment intent with Stripe
-        const paymentIntent = await createPaymentIntent(cartTotal * 100); // Convert to cents
+      if (values.paymentMethod === "Paystack") {
+        // Process Paystack payment
+        const metadata = {
+          orderId: orderId,
+          customer_name: `${values.firstName} ${values.lastName}`
+        };
         
-        if (!paymentIntent.clientSecret) {
-          throw new Error("Failed to create payment intent");
-        }
-        
-        // Update order with payment details
-        orderData.payment.status = "completed";
-        orderData.payment.stripePaymentIntentId = paymentIntent.clientSecret.split("_secret_")[0];
+        await processPaystackPayment(values.email, cartTotal, metadata, async (response: any) => {
+          if (response.status === "success") {
+            // Update order with payment details
+            const paymentRef = ref(database, `orders/${orderId}/payment`);
+            await set(paymentRef, {
+              method: "Paystack",
+              amount: cartTotal,
+              status: "completed",
+              reference: response.reference,
+              timestamp: new Date().toISOString()
+            });
+            
+            // Send confirmation email
+            await sendOrderConfirmationEmail(orderData, values.email);
+            
+            // Clear cart and redirect to success page
+            clearCart();
+            navigate(`/order-confirmation/${orderId}`);
+            toast.success("Payment successful! Your order has been placed.");
+          }
+        });
       } 
       else if (values.paymentMethod === "Bank Transfer") {
         // Process bank transfer
@@ -162,25 +168,27 @@ const Checkout = () => {
           accountNumber: "0123456789",
           accountName: "Gozie Mini Store Ltd"
         });
+        
+        // Send confirmation email
+        await sendOrderConfirmationEmail(orderData, values.email);
+        
+        // Clear cart and redirect to success page
+        clearCart();
+        navigate(`/order-confirmation/${orderId}`);
+        toast.success("Order placed successfully! Please complete your bank transfer.");
       } 
       else if (values.paymentMethod === "USSD") {
         // Process USSD payment
         await processUSSDPayment(orderId);
+        
+        // Send confirmation email
+        await sendOrderConfirmationEmail(orderData, values.email);
+        
+        // Clear cart and redirect to success page
+        clearCart();
+        navigate(`/order-confirmation/${orderId}`);
+        toast.success("Order placed successfully! Please complete your USSD payment.");
       }
-      
-      // Send confirmation email
-      await sendOrderConfirmationEmail({
-        orderId,
-        items: orderItems,
-        total: cartTotal,
-        delivery: orderData.delivery,
-        payment: orderData.payment
-      }, values.email);
-
-      // Clear cart and redirect to success page
-      clearCart();
-      navigate(`/order-confirmation/${orderId}`);
-      toast.success("Order placed successfully!");
     } catch (error) {
       console.error("Checkout error:", error);
       toast.error("Failed to process your order. Please try again.");
@@ -321,11 +329,11 @@ const Checkout = () => {
                               value={field.value}
                               className="grid grid-cols-1 md:grid-cols-3 gap-4"
                             >
-                              <div className={`flex items-center space-x-2 border rounded-md p-4 cursor-pointer transition-colors ${field.value === 'Card' ? 'border-yellow-500 bg-yellow-50' : 'border-gray-200'}`}>
-                                <RadioGroupItem value="Card" id="card" />
-                                <FormLabel htmlFor="card" className="cursor-pointer flex items-center">
+                              <div className={`flex items-center space-x-2 border rounded-md p-4 cursor-pointer transition-colors ${field.value === 'Paystack' ? 'border-yellow-500 bg-yellow-50' : 'border-gray-200'}`}>
+                                <RadioGroupItem value="Paystack" id="paystack" />
+                                <FormLabel htmlFor="paystack" className="cursor-pointer flex items-center">
                                   <CreditCard className="mr-2 h-5 w-5 text-red-600" />
-                                  Credit Card
+                                  Paystack
                                 </FormLabel>
                               </div>
                               
@@ -352,50 +360,12 @@ const Checkout = () => {
                   </div>
 
                   {/* Payment Method Specific Fields */}
-                  {paymentMethod === "Card" && (
+                  {paymentMethod === "Paystack" && (
                     <div className="space-y-4 mt-4 p-4 bg-gray-50 rounded-lg border border-yellow-200">
-                      <h4 className="text-md font-medium text-red-600">Card Details</h4>
-                      <FormField
-                        control={form.control}
-                        name="cardNumber"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Card Number</FormLabel>
-                            <FormControl>
-                              <Input placeholder="4111 1111 1111 1111" {...field} className="focus:border-yellow-400" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <FormField
-                          control={form.control}
-                          name="cardExpiry"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Expiry Date</FormLabel>
-                              <FormControl>
-                                <Input placeholder="MM/YY" {...field} className="focus:border-yellow-400" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name="cardCvc"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>CVC</FormLabel>
-                              <FormControl>
-                                <Input placeholder="123" {...field} className="focus:border-yellow-400" />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
+                      <h4 className="text-md font-medium text-red-600">Paystack Payment</h4>
+                      <div className="text-sm text-gray-600">
+                        <p>Click "Place Order" to proceed to the Paystack payment gateway.</p>
+                        <p>You will be redirected to complete your payment securely.</p>
                       </div>
                     </div>
                   )}
