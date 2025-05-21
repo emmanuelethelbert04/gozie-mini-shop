@@ -123,10 +123,10 @@ const OrderConfirmation = () => {
   // Payment method icon
   const getPaymentIcon = (method: string) => {
     switch (method) {
-      case "Card": return <CreditCard className="h-5 w-5 text-yellow-600" />;
-      case "Bank Transfer": return <Building className="h-5 w-5 text-yellow-600" />;
-      case "USSD": return <Phone className="h-5 w-5 text-yellow-600" />;
-      default: return <CreditCard className="h-5 w-5 text-yellow-600" />;
+      case "Card": return <CreditCard className="h-5 w-5 text-red-600" />;
+      case "Bank Transfer": return <Building className="h-5 w-5 text-red-600" />;
+      case "USSD": return <Phone className="h-5 w-5 text-red-600" />;
+      default: return <CreditCard className="h-5 w-5 text-red-600" />;
     }
   };
 
@@ -147,7 +147,7 @@ const OrderConfirmation = () => {
               <div className="inline-flex items-center justify-center rounded-full bg-green-100 p-3 mb-4">
                 <CheckCircle className="h-8 w-8 text-green-600" />
               </div>
-              <h1 className="text-2xl font-bold mb-2 text-yellow-600">Order Confirmed!</h1>
+              <h1 className="text-2xl font-bold mb-2 text-red-600">Order Confirmed!</h1>
               <p className="text-gray-600">
                 Thank you for your purchase. Your order has been received and is being processed.
               </p>
@@ -165,7 +165,7 @@ const OrderConfirmation = () => {
             </div>
 
             <div className="space-y-4 mb-6">
-              <h2 className="font-semibold text-lg text-yellow-600">Order Status</h2>
+              <h2 className="font-semibold text-lg text-red-600">Order Status</h2>
               <div className="flex items-center text-green-600">
                 <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-3">
                   <CheckCircle className="h-4 w-4" />
@@ -189,7 +189,7 @@ const OrderConfirmation = () => {
             <Separator className="my-6 bg-yellow-200" />
 
             <div className="mb-6">
-              <h2 className="font-semibold text-lg text-yellow-600 mb-4">Order Details</h2>
+              <h2 className="font-semibold text-lg text-red-600 mb-4">Order Details</h2>
               <div className="space-y-4">
                 {order.items.map((item) => (
                   <div key={item.productId} className="flex justify-between">
@@ -197,7 +197,7 @@ const OrderConfirmation = () => {
                       <p className="font-medium">{item.name}</p>
                       <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
                     </div>
-                    <p className="font-medium">${(item.price * item.quantity).toFixed(2)}</p>
+                    <p className="font-medium">₦{(item.price * item.quantity).toFixed(2)}</p>
                   </div>
                 ))}
               </div>
@@ -207,7 +207,7 @@ const OrderConfirmation = () => {
 
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <h2 className="font-semibold text-lg text-yellow-600 mb-3">Shipping Address</h2>
+                <h2 className="font-semibold text-lg text-red-600 mb-3">Shipping Address</h2>
                 <p className="text-gray-600">
                   {order.delivery.firstName} {order.delivery.lastName}
                   <br />
@@ -219,7 +219,7 @@ const OrderConfirmation = () => {
                 </p>
               </div>
               <div>
-                <h2 className="font-semibold text-lg text-yellow-600 mb-3">Payment Method</h2>
+                <h2 className="font-semibold text-lg text-red-600 mb-3">Payment Method</h2>
                 <div className="flex items-center space-x-2 mb-2">
                   {getPaymentIcon(order.payment.method)}
                   <span>
@@ -247,11 +247,11 @@ const OrderConfirmation = () => {
                   </div>
                 )}
                 
-                <h2 className="font-semibold text-lg text-yellow-600 mb-3">Order Summary</h2>
+                <h2 className="font-semibold text-lg text-red-600 mb-3">Order Summary</h2>
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Subtotal</span>
-                    <span>${order.total.toFixed(2)}</span>
+                    <span>₦{order.total.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Shipping</span>
@@ -259,7 +259,7 @@ const OrderConfirmation = () => {
                   </div>
                   <div className="flex justify-between font-bold">
                     <span>Total</span>
-                    <span className="text-yellow-700">${order.total.toFixed(2)}</span>
+                    <span className="text-red-600">₦{order.total.toFixed(2)}</span>
                   </div>
                 </div>
               </div>

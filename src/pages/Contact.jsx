@@ -11,8 +11,9 @@ import {
   CardDescription 
 } from "@/components/ui/card";
 import { toast } from "sonner";
-import { db } from "@/lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { database } from "@/lib/firebase";
+import { ref, push, set, serverTimestamp as rtdbServerTimestamp } from "firebase/database";
 import { Map, Mail, Phone, Home, Send, Loader2 } from "lucide-react";
 import { sendContactFormEmail } from "@/services/orderService";
 
@@ -74,18 +75,19 @@ const Contact = () => {
     try {
       setLoading(true);
       
-      // Add document to Firestore
-      await addDoc(collection(db, "messages"), {
+      // Add document to Realtime Database
+      const messagesRef = ref(database, "messages");
+      const newMessageRef = push(messagesRef);
+      await set(newMessageRef, {
         ...formData,
-        createdAt: serverTimestamp()
+        createdAt: new Date().toISOString()
       });
       
       // Send email via EmailJS
       await sendContactFormEmail({
         name: formData.name,
         email: formData.email,
-        message: formData.message,
-        timestamp: new Date().toISOString()
+        message: formData.message
       });
       
       // Reset form and show success message
@@ -106,13 +108,13 @@ const Contact = () => {
 
   return (
     <div className="container mx-auto px-4 py-12 animate-fade-in">
-      <h1 className="text-3xl md:text-4xl font-bold mb-8 text-center text-yellow-600">Contact Us</h1>
+      <h1 className="text-3xl md:text-4xl font-bold mb-8 text-center text-red-600">Contact Us</h1>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
         {/* Contact Information */}
         <Card className="shadow-md border-yellow-300 transform transition-all hover:shadow-lg">
           <CardHeader className="bg-yellow-50 border-b border-yellow-100">
-            <CardTitle className="text-2xl text-yellow-600">Our Information</CardTitle>
+            <CardTitle className="text-2xl text-red-600">Our Information</CardTitle>
             <CardDescription>Reach out to us through any of these channels</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6 mt-4">
@@ -154,7 +156,7 @@ const Contact = () => {
         {/* Contact Form */}
         <Card className="shadow-md border-yellow-300 transform transition-all hover:shadow-lg">
           <CardHeader className="bg-yellow-50 border-b border-yellow-100">
-            <CardTitle className="text-2xl text-yellow-600">Send Us a Message</CardTitle>
+            <CardTitle className="text-2xl text-red-600">Send Us a Message</CardTitle>
             <CardDescription>We'll respond as soon as possible</CardDescription>
           </CardHeader>
           <CardContent className="mt-4">
@@ -223,7 +225,7 @@ const Contact = () => {
       {/* Google Maps Embed */}
       <Card className="overflow-hidden shadow-md border-yellow-300 mb-12">
         <CardHeader className="bg-yellow-50 border-b border-yellow-100">
-          <CardTitle className="text-2xl text-yellow-600">Find Us</CardTitle>
+          <CardTitle className="text-2xl text-red-600">Find Us</CardTitle>
           <CardDescription>Visit our store location</CardDescription>
         </CardHeader>
         <div className="h-[400px] w-full">

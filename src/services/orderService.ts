@@ -1,6 +1,13 @@
 
 import { ref, push, set, get, query, orderByChild, equalTo } from "firebase/database";
 import { database } from "@/lib/firebase";
+import emailjs from 'emailjs-com';
+
+// Initialize EmailJS service
+const EMAILJS_SERVICE_ID = "service_5kr10ul";
+const EMAILJS_ORDER_TEMPLATE_ID = "template_ye6jjd5";
+const EMAILJS_CONTACT_TEMPLATE_ID = "template_12h0zgn";
+const EMAILJS_PUBLIC_KEY = "Pb5jDQAKBNYgwUbnL";
 
 // Create a new order
 export const createOrder = async (orderData: any): Promise<string> => {
@@ -30,7 +37,7 @@ export const createPaymentIntent = async (amount: number) => {
     return {
       clientSecret: "mock_client_secret_" + Math.random().toString(36).substring(2),
       amount: amount,
-      currency: "usd"
+      currency: "ngn" // Changed from usd to ngn for Naira
     };
   } catch (error) {
     console.error("Error creating payment intent:", error);
@@ -146,8 +153,40 @@ export const updatePaymentStatus = async (orderId: string, status: string) => {
 // EmailJS functions for sending emails
 export const sendOrderConfirmationEmail = async (orderData: any, userEmail: string) => {
   try {
-    // In a real implementation, this would call EmailJS API
-    console.log("Sending order confirmation email to:", userEmail, "with data:", orderData);
+    // Prepare delivery address string
+    const deliveryAddress = `${orderData.delivery.address}, ${orderData.delivery.city}, ${orderData.delivery.postalCode}`;
+    
+    // Format order items for email
+    const orderItemsText = orderData.items.map((item: any) => 
+      `${item.name} x ${item.quantity} - ₦${(item.price * item.quantity).toFixed(2)}`
+    ).join('\n');
+    
+    // Get current date in readable format
+    const orderDate = new Date().toLocaleDateString('en-NG', {
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric'
+    });
+    
+    // Prepare template parameters
+    const templateParams = {
+      user_name: `${orderData.delivery.firstName} ${orderData.delivery.lastName}`,
+      user_email: userEmail,
+      order_items: orderItemsText,
+      order_total: `₦${orderData.total.toFixed(2)}`,
+      delivery_address: deliveryAddress,
+      order_date: orderDate,
+      order_id: orderData.orderId || 'N/A'
+    };
+    
+    // Send email using EmailJS
+    await emailjs.send(
+      EMAILJS_SERVICE_ID,
+      EMAILJS_ORDER_TEMPLATE_ID,
+      templateParams,
+      EMAILJS_PUBLIC_KEY
+    );
+    
     return true;
   } catch (error) {
     console.error("Error sending order confirmation email:", error);
@@ -157,8 +196,21 @@ export const sendOrderConfirmationEmail = async (orderData: any, userEmail: stri
 
 export const sendContactFormEmail = async (formData: any) => {
   try {
-    // In a real implementation, this would call EmailJS API
-    console.log("Sending contact form email with data:", formData);
+    // Prepare template parameters for contact form
+    const templateParams = {
+      sender_name: formData.name,
+      sender_email: formData.email,
+      message: formData.message
+    };
+    
+    // Send email using EmailJS
+    await emailjs.send(
+      EMAILJS_SERVICE_ID,
+      EMAILJS_CONTACT_TEMPLATE_ID,
+      templateParams,
+      EMAILJS_PUBLIC_KEY
+    );
+    
     return true;
   } catch (error) {
     console.error("Error sending contact form email:", error);

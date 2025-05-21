@@ -197,7 +197,7 @@ const Checkout = () => {
         <div className="lg:col-span-2">
           <Card className="shadow-md border-yellow-300">
             <CardHeader>
-              <CardTitle className="text-yellow-600">Delivery Information</CardTitle>
+              <CardTitle className="text-red-600">Delivery Information</CardTitle>
               <CardDescription>
                 Enter your shipping details
               </CardDescription>
@@ -270,7 +270,7 @@ const Checkout = () => {
                         <FormItem>
                           <FormLabel>City</FormLabel>
                           <FormControl>
-                            <Input placeholder="New York" {...field} className="focus:border-yellow-400" />
+                            <Input placeholder="Lagos" {...field} className="focus:border-yellow-400" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -298,7 +298,7 @@ const Checkout = () => {
                       <FormItem>
                         <FormLabel>Phone Number</FormLabel>
                         <FormControl>
-                          <Input placeholder="+1 (123) 456-7890" {...field} className="focus:border-yellow-400" />
+                          <Input placeholder="+234 701 234 5678" {...field} className="focus:border-yellow-400" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -309,7 +309,7 @@ const Checkout = () => {
 
                   {/* Payment Method Selection */}
                   <div>
-                    <h3 className="text-lg font-medium mb-4 text-yellow-600">Payment Method</h3>
+                    <h3 className="text-lg font-medium mb-4 text-red-600">Payment Method</h3>
                     <FormField
                       control={form.control}
                       name="paymentMethod"
@@ -324,7 +324,7 @@ const Checkout = () => {
                               <div className={`flex items-center space-x-2 border rounded-md p-4 cursor-pointer transition-colors ${field.value === 'Card' ? 'border-yellow-500 bg-yellow-50' : 'border-gray-200'}`}>
                                 <RadioGroupItem value="Card" id="card" />
                                 <FormLabel htmlFor="card" className="cursor-pointer flex items-center">
-                                  <CreditCard className="mr-2 h-5 w-5 text-yellow-600" />
+                                  <CreditCard className="mr-2 h-5 w-5 text-red-600" />
                                   Credit Card
                                 </FormLabel>
                               </div>
@@ -332,7 +332,7 @@ const Checkout = () => {
                               <div className={`flex items-center space-x-2 border rounded-md p-4 cursor-pointer transition-colors ${field.value === 'Bank Transfer' ? 'border-yellow-500 bg-yellow-50' : 'border-gray-200'}`}>
                                 <RadioGroupItem value="Bank Transfer" id="bank" />
                                 <FormLabel htmlFor="bank" className="cursor-pointer flex items-center">
-                                  <Building className="mr-2 h-5 w-5 text-yellow-600" />
+                                  <Building className="mr-2 h-5 w-5 text-red-600" />
                                   Bank Transfer
                                 </FormLabel>
                               </div>
@@ -340,7 +340,7 @@ const Checkout = () => {
                               <div className={`flex items-center space-x-2 border rounded-md p-4 cursor-pointer transition-colors ${field.value === 'USSD' ? 'border-yellow-500 bg-yellow-50' : 'border-gray-200'}`}>
                                 <RadioGroupItem value="USSD" id="ussd" />
                                 <FormLabel htmlFor="ussd" className="cursor-pointer flex items-center">
-                                  <Phone className="mr-2 h-5 w-5 text-yellow-600" />
+                                  <Phone className="mr-2 h-5 w-5 text-red-600" />
                                   USSD
                                 </FormLabel>
                               </div>
@@ -354,7 +354,7 @@ const Checkout = () => {
                   {/* Payment Method Specific Fields */}
                   {paymentMethod === "Card" && (
                     <div className="space-y-4 mt-4 p-4 bg-gray-50 rounded-lg border border-yellow-200">
-                      <h4 className="text-md font-medium text-yellow-600">Card Details</h4>
+                      <h4 className="text-md font-medium text-red-600">Card Details</h4>
                       <FormField
                         control={form.control}
                         name="cardNumber"
@@ -402,7 +402,7 @@ const Checkout = () => {
 
                   {paymentMethod === "Bank Transfer" && (
                     <div className="space-y-4 mt-4 p-4 bg-gray-50 rounded-lg border border-yellow-200">
-                      <h4 className="text-md font-medium text-yellow-600">Bank Transfer Details</h4>
+                      <h4 className="text-md font-medium text-red-600">Bank Transfer Details</h4>
                       <div className="space-y-2">
                         <p className="flex justify-between">
                           <span className="font-medium">Bank Name:</span>
@@ -426,7 +426,7 @@ const Checkout = () => {
 
                   {paymentMethod === "USSD" && (
                     <div className="space-y-4 mt-4 p-4 bg-gray-50 rounded-lg border border-yellow-200">
-                      <h4 className="text-md font-medium text-yellow-600">USSD Payment</h4>
+                      <h4 className="text-md font-medium text-red-600">USSD Payment</h4>
                       <div className="bg-yellow-100 p-3 rounded-md text-center">
                         <p className="text-lg font-bold">*737*34*5000#</p>
                       </div>
@@ -459,7 +459,7 @@ const Checkout = () => {
           <div className="sticky top-20">
             <Card className="shadow-md border-yellow-300">
               <CardHeader className="bg-yellow-50">
-                <CardTitle className="text-yellow-600">Order Summary</CardTitle>
+                <CardTitle className="text-red-600">Order Summary</CardTitle>
               </CardHeader>
               <CardContent>
                 <OrderSummary cartItems={cartItems} cartTotal={cartTotal} />
@@ -494,7 +494,7 @@ const OrderSummary = ({ cartItems, cartTotal }: { cartItems: any[], cartTotal: n
             <span className="text-yellow-700">
               {item.product.name} × {item.quantity}
             </span>
-            <span className="font-medium">${(item.product.price * item.quantity).toFixed(2)}</span>
+            <span className="font-medium">₦{(item.product.price * item.quantity).toFixed(2)}</span>
           </div>
         ))}
       </div>
@@ -504,7 +504,7 @@ const OrderSummary = ({ cartItems, cartTotal }: { cartItems: any[], cartTotal: n
       <div className="space-y-2">
         <div className="flex justify-between">
           <span>Subtotal</span>
-          <span>${cartTotal.toFixed(2)}</span>
+          <span>₦{cartTotal.toFixed(2)}</span>
         </div>
         <div className="flex justify-between">
           <span>Shipping</span>
@@ -516,7 +516,7 @@ const OrderSummary = ({ cartItems, cartTotal }: { cartItems: any[], cartTotal: n
 
       <div className="flex justify-between font-bold text-lg">
         <span>Total</span>
-        <span className="text-yellow-700">${cartTotal.toFixed(2)}</span>
+        <span className="text-red-600">₦{cartTotal.toFixed(2)}</span>
       </div>
     </div>
   );
