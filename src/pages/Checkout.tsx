@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
@@ -55,6 +54,13 @@ const formSchema = z.object({
 });
 
 type FormValues = z.infer<typeof formSchema>;
+
+interface PaymentDetails {
+  method: "Bank Transfer" | "USSD" | "Card";
+  amount: number;
+  status: string;
+  stripePaymentIntentId?: string; // Added as optional since it will only exist for Card payments
+}
 
 const Checkout = () => {
   const { cartItems, cartTotal, clearCart } = useCart();
