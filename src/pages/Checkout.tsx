@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/contexts/CartContext";
@@ -128,6 +127,7 @@ const Checkout = () => {
 
       // Create the order first
       const orderId = await createOrder(orderData);
+      console.log("Order created with ID:", orderId);
       
       // Handle payment based on the selected method
       if (values.paymentMethod === "Paystack") {
@@ -138,6 +138,7 @@ const Checkout = () => {
         };
         
         await processPaystackPayment(values.email, cartTotal, metadata, async (response: any) => {
+          console.log("Paystack response:", response);
           if (response.status === "success") {
             // Send confirmation email with the orderId
             await sendOrderConfirmationEmail({

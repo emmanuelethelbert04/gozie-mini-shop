@@ -1,8 +1,6 @@
 import { ref, push, set, get, query, orderByChild, equalTo } from "firebase/database";
 import { database } from "@/lib/firebase";
 import emailjs from 'emailjs-com';
-// Import using named import instead of default import
-import * as PaystackPop from 'paystack-js';
 
 // Initialize EmailJS service
 const EMAILJS_SERVICE_ID = "service_5kr10ul";
@@ -10,8 +8,8 @@ const EMAILJS_ORDER_TEMPLATE_ID = "template_ye6jjd5";
 const EMAILJS_CONTACT_TEMPLATE_ID = "template_12h0zgn";
 const EMAILJS_PUBLIC_KEY = "Pb5jDQAKBNYgwUbnL";
 
-// Paystack public key (replace with your Paystack public key)
-const PAYSTACK_PUBLIC_KEY = "pk_test_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
+// Paystack public key
+const PAYSTACK_PUBLIC_KEY = "pk_test_dd07166e34aa9b885fa0ecfaa3d6563ca6c12c06";
 
 // Create a new order
 export const createOrder = async (orderData: any): Promise<string> => {
@@ -34,9 +32,14 @@ export const createOrder = async (orderData: any): Promise<string> => {
 // Process payment with Paystack
 export const processPaystackPayment = async (email: string, amount: number, metadata: any, callback: Function) => {
   try {
-    // Use the PaystackPop directly without initialization
-    // This is following the paystack-js API
-    PaystackPop.newTransaction({
+    // Load Paystack inline script dynamically if not already loaded
+    if (!window.PaystackPop) {
+      console.log("Initializing Paystack script dynamically");
+      await loadPaystackScript();
+    }
+    
+    // Use the global PaystackPop object that's loaded by the script
+    window.PaystackPop.setup({
       key: PAYSTACK_PUBLIC_KEY,
       email,
       amount: amount * 100, // Convert to kobo (smallest unit of Nigerian currency)
@@ -44,6 +47,7 @@ export const processPaystackPayment = async (email: string, amount: number, meta
       ref: 'GMS-' + Math.floor((Math.random() * 1000000000) + 1), // Generate a unique reference
       metadata,
       callback: function(response: any) {
+        console.log("Payment successful with reference:", response.reference);
         callback(response);
       },
       onClose: function() {
@@ -56,6 +60,23 @@ export const processPaystackPayment = async (email: string, amount: number, meta
     console.error("Error processing Paystack payment:", error);
     throw error;
   }
+};
+
+// Helper function to load Paystack script
+const loadPaystackScript = () => {
+  return new Promise<void>((resolve, reject) => {
+    if (window.PaystackPop) {
+      resolve();
+      return;
+    }
+    
+    const script = document.createElement('script');
+    script.src = 'https://js.paystack.co/v1/inline.js';
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("Failed to load Paystack script"));
+    document.body.appendChild(script);
+  });
 };
 
 // Process bank transfer payment
@@ -230,3 +251,10 @@ export const sendContactFormEmail = async (formData: any) => {
     throw error;
   }
 };
+
+// Add TypeScript interfaces to global Window object
+declare global {
+  interface Window {
+    PaystackPop: any;
+  }
+}
