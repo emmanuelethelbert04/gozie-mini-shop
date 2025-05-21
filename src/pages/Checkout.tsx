@@ -128,7 +128,6 @@ const Checkout = () => {
 
       // Create the order first
       const orderId = await createOrder(orderData);
-      orderData.orderId = orderId;
       
       // Handle payment based on the selected method
       if (values.paymentMethod === "Paystack") {
@@ -140,18 +139,11 @@ const Checkout = () => {
         
         await processPaystackPayment(values.email, cartTotal, metadata, async (response: any) => {
           if (response.status === "success") {
-            // Update order with payment details
-            const paymentRef = ref(database, `orders/${orderId}/payment`);
-            await set(paymentRef, {
-              method: "Paystack",
-              amount: cartTotal,
-              status: "completed",
-              reference: response.reference,
-              timestamp: new Date().toISOString()
-            });
-            
-            // Send confirmation email
-            await sendOrderConfirmationEmail(orderData, values.email);
+            // Send confirmation email with the orderId
+            await sendOrderConfirmationEmail({
+              ...orderData,
+              orderId: orderId
+            }, values.email);
             
             // Clear cart and redirect to success page
             clearCart();
@@ -169,8 +161,11 @@ const Checkout = () => {
           accountName: "Gozie Mini Store Ltd"
         });
         
-        // Send confirmation email
-        await sendOrderConfirmationEmail(orderData, values.email);
+        // Send confirmation email with the orderId
+        await sendOrderConfirmationEmail({
+          ...orderData,
+          orderId: orderId
+        }, values.email);
         
         // Clear cart and redirect to success page
         clearCart();
@@ -181,8 +176,11 @@ const Checkout = () => {
         // Process USSD payment
         await processUSSDPayment(orderId);
         
-        // Send confirmation email
-        await sendOrderConfirmationEmail(orderData, values.email);
+        // Send confirmation email with the orderId
+        await sendOrderConfirmationEmail({
+          ...orderData,
+          orderId: orderId
+        }, values.email);
         
         // Clear cart and redirect to success page
         clearCart();

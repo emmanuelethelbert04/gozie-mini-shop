@@ -5,7 +5,8 @@ import { getOrderById } from "@/services/orderService";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { CheckCircle, Truck, Building, Phone, CreditCard, Clock, Calendar } from "lucide-react";
+import { CheckCircle, Truck, Building, Phone, CreditCard } from "lucide-react";
+import DeliveryTracking from "@/components/DeliveryTracking";
 
 interface OrderItem {
   productId: string;
@@ -15,10 +16,10 @@ interface OrderItem {
 }
 
 interface PaymentDetails {
-  method: "Card" | "Bank Transfer" | "USSD";
+  method: "Paystack" | "Bank Transfer" | "USSD";
   status: "pending" | "completed";
   amount: number;
-  stripePaymentIntentId?: string;
+  reference?: string;
   bankName?: string;
   accountNumber?: string;
   accountName?: string;
@@ -123,7 +124,7 @@ const OrderConfirmation = () => {
   // Payment method icon
   const getPaymentIcon = (method: string) => {
     switch (method) {
-      case "Card": return <CreditCard className="h-5 w-5 text-red-600" />;
+      case "Paystack": return <CreditCard className="h-5 w-5 text-red-600" />;
       case "Bank Transfer": return <Building className="h-5 w-5 text-red-600" />;
       case "USSD": return <Phone className="h-5 w-5 text-red-600" />;
       default: return <CreditCard className="h-5 w-5 text-red-600" />;
@@ -140,7 +141,10 @@ const OrderConfirmation = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 animate-fade-in">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-3xl mx-auto">
+        {/* Add the DeliveryTracking component */}
+        <DeliveryTracking orderStatus={order.status} orderId={order.id} />
+        
         <Card className="border-yellow-300 shadow-md">
           <CardContent className="p-6">
             <div className="text-center mb-6">
@@ -161,28 +165,6 @@ const OrderConfirmation = () => {
               <div className="flex justify-between">
                 <span className="font-medium">Order Date:</span>
                 <span>{formattedDate} at {formattedTime}</span>
-              </div>
-            </div>
-
-            <div className="space-y-4 mb-6">
-              <h2 className="font-semibold text-lg text-red-600">Order Status</h2>
-              <div className="flex items-center text-green-600">
-                <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-3">
-                  <CheckCircle className="h-4 w-4" />
-                </div>
-                <div>
-                  <p className="font-medium">Order Confirmed</p>
-                  <p className="text-sm text-gray-600">{formattedDate}</p>
-                </div>
-              </div>
-              <div className="flex items-center text-gray-600">
-                <div className="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center mr-3">
-                  <Truck className="h-4 w-4" />
-                </div>
-                <div>
-                  <p className="font-medium">Estimated Delivery</p>
-                  <p className="text-sm">{formattedDeliveryDate}</p>
-                </div>
               </div>
             </div>
 
